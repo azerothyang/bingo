@@ -1,1 +1,1 @@
-# ego
+# easygo
