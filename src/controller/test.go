@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"util"
 	"util/status"
+	"time"
 )
 
 type Test struct {
@@ -14,7 +15,7 @@ type Test struct {
 }
 
 //新建notice
-func (b *Test) Add(c *gin.Context) {
+func (t *Test) Add(c *gin.Context) {
 	var notice model.Notice
 	//请求参数进行数据绑定
 	if err := c.ShouldBind(&notice); err != nil {
@@ -58,7 +59,7 @@ func (b *Test) Add(c *gin.Context) {
 	})
 }
 
-func (b *Test) Get(c *gin.Context) {
+func (t *Test) Get(c *gin.Context) {
 	noticeId := c.Param("noticeId")
 	notice, err := (&model.NoticeModel{}).GetById(noticeId, "notice_code, notice_content, create_time")
 	if err != nil {
@@ -72,16 +73,21 @@ func (b *Test) Get(c *gin.Context) {
 }
 
 //获取数据库总数的例子
-func (b *Test) GetTotal(c *gin.Context) {
+func (t *Test) GetTotal(c *gin.Context) {
 	res := (&model.NoticeModel{}).GetAllCount()
 	c.JSON(http.StatusOK, gin.H{
 		"code": http.StatusOK,
 		"msg":  nil,
 		"data": res,
 	})
+	t.SetCache(c, gin.H{
+		"code": http.StatusOK,
+		"msg":  nil,
+		"data": res,
+	}, time.Minute)
 }
 
-func (b *Test) RedisSet(c *gin.Context) {
+func (t *Test) RedisSet(c *gin.Context) {
 	str, _ := Redis.Gett("x")
 	c.JSON(http.StatusOK, gin.H{
 		"code": http.StatusOK,

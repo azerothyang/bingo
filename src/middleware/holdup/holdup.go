@@ -28,11 +28,13 @@ func CheckHold() gin.HandlerFunc {
 			userInfo := token.GetTokenInfo(c)
 			//这里如用户id等于0表示没登录， 且没有权限
 			if userInfo.UserId == 0 {
+				//立马终止 。后续中间件不会再执行, 同时后续请求也不在分发到控制器, 直接返回。注意本函数内的后续代码后继续执行，如果不想执行 直接return
 				c.AbortWithStatusJSON(200, gin.H{
 					"code": http.StatusForbidden,
 					"msg":  http.StatusText(http.StatusForbidden),
 					"data": nil,
-				}) //立马终止 。后续中间件不会再执行, 同时后续请求也不在分发到控制器, 直接返回。
+				})
+				return
 			}
 		}
 		// Set example variable

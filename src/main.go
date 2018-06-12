@@ -8,13 +8,14 @@ import (
 	"middleware/holdup"
 	"middleware/token"
 	"router"
+	"middleware/ckcache"
 )
 
 func setupRouter() *gin.Engine {
 	// Disable Console Color
 	// gin.DisableConsoleColor()
 	r := gin.Default()
-	r.Use(token.HandleToken(), holdup.CheckHold()) //中间件
+	r.Use(token.HandleToken(), holdup.CheckHold(), ckcache.CheckCache()) //中间件
 	// Ping test
 	//r.GET("/ping", func(c *gin.Context) {
 	//	c.JSON(http.StatusOK, gin.H{
