@@ -37,6 +37,15 @@ func TestGett(T *testing.T) {
 	fmt.Println(res)
 }
 
+//压力测试
+func BenchmarkGett(b *testing.B) {
+	redisConn := redisConn.NewPool()
+	res, err := redisConn.Gett("x")
+	if err != nil {
+	}
+	fmt.Println(res)
+}
+
 func TestDel(T *testing.T) {
 	redisConn := redisConn.NewPool()
 	num := redisConn.Del("x", "y")
