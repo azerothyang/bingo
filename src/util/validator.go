@@ -1,114 +1,111 @@
 package util
 
 import (
-	"net/url"
 	"regexp"
 	"strconv"
 	"strings"
 )
 
-//暂未使用
+//todo 完善
 
 type Validator struct {
 	HasErr  bool              //是否严重有错
 	ErrList map[string]string //校验错误列表
-	ErrMsg  string            //错误信息
 }
 
 type rules map[string]string
 
 //初始化Validator
-func NewValidator() *Validator {
+func New() *Validator {
 	return &Validator{
 		HasErr:  false,
 		ErrList: make(map[string]string),
-		ErrMsg:  "",
 	}
 }
 
-func (validator *Validator) Validate(form *url.Values, rules rules) *Validator {
+/**
+form直接传bingo.MergeRequest中处理返回的键值对请求数据
+rules参数形式:, map[string]string{
+	"param1": "required|min:10",
+	"param1": "required|min:10",
+}
+ */
+func (validator *Validator) Validate(form *map[string]string, rules rules) *Validator {
 	for field, rule := range rules {
-		validMethods := strings.Split(rule, "|")
-		fieldValidRes := true //单个字段的校验结果
-		errorReason := ""     //校验错误原因
-		for _, method := range validMethods {
-			subMethod := strings.Split(method, ":")
+		valis := strings.Split(rule, "|")
+		validator.HasErr = false //单个字段校验结果是否有错
+		for _, method := range valis {
+			subValis := strings.Split(method, ":")
 			//TODO 这里只支持一个参数
 			arg := ""
-			if len(subMethod) == 2 {
-				method = subMethod[0]
-				arg = subMethod[1]
+			if len(subValis) == 2 {
+				method = subValis[0]
+				arg = subValis[1]
 			}
 			if method == "notEmpty" {
 				if validator.notEmpty(field, form) == false {
-					fieldValidRes = false
-					errorReason = method
-					break
+					validator.HasErr = true
+					validator.ErrList[field] = "不能为空"
+					continue
 				}
 			}
 			if method == "mobile" {
 				if validator.mobile(field, form) == false {
-					fieldValidRes = false
-					errorReason = method
-					break
+					validator.HasErr = true
+					validator.ErrList[field] = "格式错误"
+					continue
 				}
 			}
 			if method == "password" {
 				if validator.password(field, form) == false {
-					fieldValidRes = false
-					errorReason = method
-					break
+					validator.HasErr = true
+					validator.ErrList[field] = "格式错误"
+					continue
 				}
 			}
 			if method == "nick" {
 				if validator.nick(field, form) == false {
-					fieldValidRes = false
-					errorReason = method
-					break
+					validator.HasErr = true
+					validator.ErrList[field] = "格式错误"
+					continue
 				}
 			}
 			if method == "regex" {
 				if validator.regex(field, form, arg) == false {
-					fieldValidRes = false
-					errorReason = method
-					break
+					validator.HasErr = true
+					validator.ErrList[field] = "格式错误"
+					continue
 				}
 			}
 			if method == "min" {
 				if validator.min(field, form, arg) == false {
-					fieldValidRes = false
-					errorReason = method
-					break
+					validator.HasErr = true
+					validator.ErrList[field] = "格式错误"
+					continue
 				}
 			}
 
+			// max:3
 			if method == "max" {
 				if validator.max(field, form, arg) == false {
-					fieldValidRes = false
-					errorReason = method
-					break
+					validator.HasErr = true
+					validator.ErrList[field] = "格式错误"
+					continue
 				}
 			}
-		}
-		if fieldValidRes == false {
-			validator.HasErr = true
-			validator.ErrList[field] = errorReason
-			validator.ErrMsg = field + ": " + errorReason + "\r\n"
 		}
 	}
 	return validator
 }
 
 //判断参数是否为空
-func (*Validator) notEmpty(field string, form *url.Values) bool {
-	if len(form.Get(field)) > 0 {
-		return true
-	}
-	return false
+func (*Validator) notEmpty(field string, form *map[string]string) bool {
+	v, k := (*form)[field]
+	
 }
 
 //手机号验证
-func (*Validator) mobile(field string, form *url.Values) bool {
+func (*Validator) mobile(field string, form *map[string]string) bool {
 	if ok, _ := regexp.MatchString("^(13[0-9]|14[579]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])\\d{8}$", form.Get(field)); ok {
 		return true
 	}
@@ -116,7 +113,7 @@ func (*Validator) mobile(field string, form *url.Values) bool {
 }
 
 //密码验证 密码8-16位数字和字母的组合这两个符号(不能是纯数字或者纯字母)
-func (*Validator) password(field string, form *url.Values) bool {
+func (*Validator) password(field string, form *map[string]string) bool {
 	if ok, _ := regexp.MatchString("^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,16}$", form.Get(field)); ok {
 		return true
 	}
@@ -124,7 +121,7 @@ func (*Validator) password(field string, form *url.Values) bool {
 }
 
 //用户昵称校验 中文和英文或数字不能有特殊符号长度为2-10位
-func (*Validator) nick(field string, form *url.Values) bool {
+func (*Validator) nick(field string, form *map[string]string) bool {
 	if ok, _ := regexp.MatchString("^[a-zA-Z0-9\u4e00-\u9fff]{2,10}$", form.Get(field)); ok {
 		return true
 	}
@@ -132,7 +129,7 @@ func (*Validator) nick(field string, form *url.Values) bool {
 }
 
 //正则校验
-func (*Validator) regex(field string, form *url.Values, pattern string) bool {
+func (*Validator) regex(field string, form *map[string]string, pattern string) bool {
 	if ok, _ := regexp.MatchString(pattern, form.Get(field)); ok {
 		return true
 	}
@@ -140,7 +137,7 @@ func (*Validator) regex(field string, form *url.Values, pattern string) bool {
 }
 
 //最小只不能小于xx 即验证大于等于arg数值, 下限
-func (*Validator) min(field string, form *url.Values, arg string) bool {
+func (*Validator) min(field string, form *map[string]string, arg string) bool {
 	number, err := strconv.Atoi(form.Get(field))
 	min, errV := strconv.Atoi(arg)
 	if err != nil || errV != nil {
@@ -153,7 +150,7 @@ func (*Validator) min(field string, form *url.Values, arg string) bool {
 }
 
 //最大值不能大于xx 即验证小于等于 arg数值, 上限
-func (*Validator) max(field string, form *url.Values, arg string) bool {
+func (*Validator) max(field string, form *map[string]string, arg string) bool {
 	number, err := strconv.Atoi(form.Get(field))
 	max, errV := strconv.Atoi(arg)
 	if err != nil || errV != nil {
