@@ -1,4 +1,4 @@
-package util
+package validate
 
 import (
 	"regexp"
@@ -29,15 +29,17 @@ rules参数形式:, map[string]string{
 	"param1": "required|min:10",
 	"param1": "required|min:10",
 }
- */
+*/
 func (validator *Validator) Validate(form *map[string]string, rules rules) *Validator {
 	for field, rule := range rules {
 		valis := strings.Split(rule, "|")
 		validator.HasErr = false //单个字段校验结果是否有错
-		for _, method := range valis {
-			subValis := strings.Split(method, ":")
-			//TODO 这里只支持一个参数
+		for _, vali := range valis {
+			subValis := strings.Split(vali, ":")
+			//这里只支持一个参数
 			arg := ""
+			method := vali
+			//如果子校验规则带有参数则再做处理
 			if len(subValis) == 2 {
 				method = subValis[0]
 				arg = subValis[1]
@@ -80,7 +82,7 @@ func (validator *Validator) Validate(form *map[string]string, rules rules) *Vali
 			if method == "min" {
 				if validator.min(field, form, arg) == false {
 					validator.HasErr = true
-					validator.ErrList[field] = "格式错误"
+					validator.ErrList[field] = "值小于规定值"
 					continue
 				}
 			}
@@ -89,7 +91,16 @@ func (validator *Validator) Validate(form *map[string]string, rules rules) *Vali
 			if method == "max" {
 				if validator.max(field, form, arg) == false {
 					validator.HasErr = true
-					validator.ErrList[field] = "格式错误"
+					validator.ErrList[field] = "值大于规定值"
+					continue
+				}
+			}
+
+			// numeric
+			if method == "numeric" {
+				if validator.numeric(field, form) == false {
+					validator.HasErr = true
+					validator.ErrList[field] = "值大于规定值"
 					continue
 				}
 			}
@@ -100,13 +111,17 @@ func (validator *Validator) Validate(form *map[string]string, rules rules) *Vali
 
 //判断参数是否为空
 func (*Validator) notEmpty(field string, form *map[string]string) bool {
-	v, k := (*form)[field]
-	
+	v, ok := (*form)[field]
+	if !ok || v == "" {
+		return false
+	}
+	return true
 }
 
 //手机号验证
 func (*Validator) mobile(field string, form *map[string]string) bool {
-	if ok, _ := regexp.MatchString("^(13[0-9]|14[579]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])\\d{8}$", form.Get(field)); ok {
+	v, _ := (*form)[field]
+	if ok, _ := regexp.MatchString("^(13[0-9]|14[579]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])\\d{8}$", v); ok {
 		return true
 	}
 	return false
@@ -114,7 +129,8 @@ func (*Validator) mobile(field string, form *map[string]string) bool {
 
 //密码验证 密码8-16位数字和字母的组合这两个符号(不能是纯数字或者纯字母)
 func (*Validator) password(field string, form *map[string]string) bool {
-	if ok, _ := regexp.MatchString("^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,16}$", form.Get(field)); ok {
+	v, _ := (*form)[field]
+	if ok, _ := regexp.MatchString("^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,16}$", v); ok {
 		return true
 	}
 	return false
@@ -122,7 +138,8 @@ func (*Validator) password(field string, form *map[string]string) bool {
 
 //用户昵称校验 中文和英文或数字不能有特殊符号长度为2-10位
 func (*Validator) nick(field string, form *map[string]string) bool {
-	if ok, _ := regexp.MatchString("^[a-zA-Z0-9\u4e00-\u9fff]{2,10}$", form.Get(field)); ok {
+	v, _ := (*form)[field]
+	if ok, _ := regexp.MatchString("^[a-zA-Z0-9\u4e00-\u9fff]{2,10}$", v); ok {
 		return true
 	}
 	return false
@@ -130,7 +147,8 @@ func (*Validator) nick(field string, form *map[string]string) bool {
 
 //正则校验
 func (*Validator) regex(field string, form *map[string]string, pattern string) bool {
-	if ok, _ := regexp.MatchString(pattern, form.Get(field)); ok {
+	v, _ := (*form)[field]
+	if ok, _ := regexp.MatchString(pattern, v); ok {
 		return true
 	}
 	return false
@@ -138,7 +156,8 @@ func (*Validator) regex(field string, form *map[string]string, pattern string) b
 
 //最小只不能小于xx 即验证大于等于arg数值, 下限
 func (*Validator) min(field string, form *map[string]string, arg string) bool {
-	number, err := strconv.Atoi(form.Get(field))
+	v, _ := (*form)[field]
+	number, err := strconv.Atoi(v)
 	min, errV := strconv.Atoi(arg)
 	if err != nil || errV != nil {
 		return false
@@ -151,7 +170,8 @@ func (*Validator) min(field string, form *map[string]string, arg string) bool {
 
 //最大值不能大于xx 即验证小于等于 arg数值, 上限
 func (*Validator) max(field string, form *map[string]string, arg string) bool {
-	number, err := strconv.Atoi(form.Get(field))
+	v, _ := (*form)[field]
+	number, err := strconv.Atoi(v)
 	max, errV := strconv.Atoi(arg)
 	if err != nil || errV != nil {
 		return false
@@ -160,4 +180,14 @@ func (*Validator) max(field string, form *map[string]string, arg string) bool {
 		return true
 	}
 	return false
+}
+
+//数值型, todo 还需要测试
+func (*Validator) numeric(field string, form *map[string]string) bool {
+	v, _ := (*form)[field]
+	_, err := strconv.Atoi(v)
+	if err != nil {
+		return false
+	}
+	return true
 }

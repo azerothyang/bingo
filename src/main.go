@@ -5,10 +5,10 @@ import (
 	"conf"
 	"github.com/gin-gonic/gin"
 	"log"
+	"middleware/ckcache"
 	"middleware/holdup"
 	"middleware/token"
 	"router"
-	"middleware/ckcache"
 )
 
 func setupRouter() *gin.Engine {

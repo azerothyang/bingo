@@ -5,9 +5,9 @@ import (
 	"github.com/gin-gonic/gin"
 	"model"
 	"net/http"
+	"time"
 	"util"
 	"util/status"
-	"time"
 )
 
 type Test struct {
