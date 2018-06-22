@@ -43,7 +43,11 @@ func (n *NoticeModel) GetById(noticeId string, cols string) (*Notice, error) {
 	db := orm.NewOrm()
 	db.Using("slave")
 	err := db.Raw(sql, noticeId).QueryRow(&notice)
-	return &notice, err
+	//这里把noRows当做没有错误, 只是没有返回数据
+	if err != nil && err != orm.ErrNoRows{
+		return &notice, err
+	}
+	return &notice, nil
 }
 
 //协程, 管道是本身就是引用, 切片传参默认是会新生成一个内存对应到之前切片对应的底层数组， 其实就是不同内存指向同一底层内存

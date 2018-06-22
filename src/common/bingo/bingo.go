@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-//处理前端请求中携带的所有参数, 合并到map中
+//处理前端请求body中query中以及url中携带的所有参数, 合并到mergeReq中, body里的会覆盖query中的
 func MergeRequest(req *http.Request, params gin.Params) (*map[string]string, error) {
 	mergeReq := make(map[string]string)
 	err := req.ParseForm()

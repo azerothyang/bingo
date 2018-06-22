@@ -31,7 +31,10 @@ func main() {
 	setUpSrv(route)
 }
 
-//启动服务器, 优化支持平滑重启
+/**
+ * 启动服务, 优化支持平滑重启。将新的编译后的文件覆盖之前文件然后
+ * 然后kill -HUP 进程 ID
+ */
 func setUpSrv(router *gin.Engine) {
 	var srv *grace.Server
 	if conf.Mode == gin.DebugMode {

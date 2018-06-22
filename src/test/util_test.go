@@ -33,3 +33,8 @@ func BenchmarkOnlyCols(b *testing.B)  {
 	util.OnlyCols(cols, &form)
 	fmt.Println(form)
 }
+
+func TestNewUUID(t *testing.T) {
+	str, _ := util.NewUUID()
+	fmt.Println(str)
+}

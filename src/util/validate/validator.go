@@ -4,6 +4,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"unicode/utf8"
 )
 
 
@@ -93,7 +94,25 @@ func (validator *Validator) Validate(form *map[string]string, rules rules) *Vali
 			if method == "max" {
 				if validator.max(field, form, arg) == false {
 					validator.HasErr = true
-					validator.ErrList[field] = "值大于规定值"
+					validator.ErrList[field] = "大于指定值"
+					continue
+				}
+			}
+
+			// minLength
+			if method == "minLength" {
+				if validator.minLength(field, form, arg) == false {
+					validator.HasErr = true
+					validator.ErrList[field] = "小于最小长度"
+					continue
+				}
+			}
+
+			// maxLength
+			if method == "maxLength" {
+				if validator.maxLength(field, form, arg) == false {
+					validator.HasErr = true
+					validator.ErrList[field] = "超过最大长度"
 					continue
 				}
 			}
@@ -102,7 +121,7 @@ func (validator *Validator) Validate(form *map[string]string, rules rules) *Vali
 			if method == "numeric" {
 				if validator.numeric(field, form) == false {
 					validator.HasErr = true
-					validator.ErrList[field] = "值大于规定值"
+					validator.ErrList[field] = "非整数数值型"
 					continue
 				}
 			}
@@ -184,7 +203,7 @@ func (*Validator) max(field string, form *map[string]string, arg string) bool {
 	return false
 }
 
-//数值型, todo 还需要测试
+//数值型
 func (*Validator) numeric(field string, form *map[string]string) bool {
 	v, _ := (*form)[field]
 	_, err := strconv.Atoi(v)
@@ -192,4 +211,30 @@ func (*Validator) numeric(field string, form *map[string]string) bool {
 		return false
 	}
 	return true
+}
+
+//字符串最大长度
+func (*Validator) maxLength(field string, form *map[string]string, arg string) bool {
+	v, _ := (*form)[field]
+	maxLength, err := strconv.Atoi(arg)
+	if err != nil {
+		return false
+	}
+	if utf8.RuneCountInString(v) <= maxLength {
+		return true
+	}
+	return false
+}
+
+//字符串最小长度
+func (*Validator) minLength(field string, form *map[string]string, arg string) bool {
+	v, _ := (*form)[field]
+	minLength, err := strconv.Atoi(arg)
+	if err != nil {
+		return false
+	}
+	if utf8.RuneCountInString(v) >= minLength {
+		return true
+	}
+	return false
 }

@@ -10,13 +10,13 @@ func TestValidator(t *testing.T)  {
 	form := map[string]string{
 		"code":"",
 		"msg":"",
-		"phone":"1832085ddow",
+		"phone":"1832085.5",
 	}
 
 	rules := map[string]string{
 		"code":"required",
 		"msg":"required",
-		"phone":"mobile",
+		"phone":"numeric",
 	}
 	validator := validate.New()
 	validator.Validate(&form, rules)
