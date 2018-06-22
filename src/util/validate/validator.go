@@ -6,7 +6,6 @@ import (
 	"strings"
 )
 
-//todo 完善
 
 type Validator struct {
 	HasErr  bool              //是否严重有错
@@ -35,6 +34,9 @@ func (validator *Validator) Validate(form *map[string]string, rules rules) *Vali
 		valis := strings.Split(rule, "|")
 		validator.HasErr = false //单个字段校验结果是否有错
 		for _, vali := range valis {
+			if vali == "" {
+				continue
+			}
 			subValis := strings.Split(vali, ":")
 			//这里只支持一个参数
 			arg := ""

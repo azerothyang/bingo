@@ -1,0 +1,24 @@
+package test
+
+import (
+	"testing"
+	"util/validate"
+	"fmt"
+)
+
+func TestValidator(t *testing.T)  {
+	form := map[string]string{
+		"code":"",
+		"msg":"",
+		"phone":"1832085ddow",
+	}
+
+	rules := map[string]string{
+		"code":"required",
+		"msg":"required",
+		"phone":"mobile",
+	}
+	validator := validate.New()
+	validator.Validate(&form, rules)
+	fmt.Println(validator.HasErr, validator.ErrList)
+}
