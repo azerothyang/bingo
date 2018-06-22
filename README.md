@@ -1,1 +1,1 @@
-# easygo
+# bingo
