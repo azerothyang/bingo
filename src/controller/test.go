@@ -8,6 +8,8 @@ import (
 	"time"
 	"util"
 	"util/status"
+	"common/bingo"
+	"fmt"
 )
 
 type Test struct {
@@ -88,6 +90,8 @@ func (t *Test) GetTotal(c *gin.Context) {
 }
 
 func (t *Test) RedisSet(c *gin.Context) {
+	requests, _ := bingo.MergeRequest(c.Request, c.Params)
+	fmt.Println(*requests)
 	str, _ := Redis.Gett("x")
 	c.JSON(http.StatusOK, gin.H{
 		"code": http.StatusOK,

@@ -12,9 +12,10 @@ func MergeRequest(req *http.Request, params gin.Params) (*map[string]string, err
 	if err != nil {
 		return &mergeReq, err
 	}
-	for k := range req.PostForm {
-		mergeReq[k] = req.PostForm.Get(k)
+	for k := range req.Form {
+		mergeReq[k] = req.Form.Get(k)
 	}
+	//url中带的如 /user/:id/video/:vid 中的id和vid
 	for _, param := range params {
 		mergeReq[param.Key] = param.Value
 	}
