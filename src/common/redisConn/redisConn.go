@@ -6,6 +6,7 @@ import (
 	"github.com/gomodule/redigo/redis"
 	"reflect"
 	"time"
+	"log"
 )
 
 //redis set方法
@@ -169,6 +170,8 @@ func NewPool() *RedisPool {
 			c, err = redis.Dial("tcp", conf.RedisHost+":"+conf.RedisPort, optionDb, optionTimeout, optionAuth)
 		}
 		if err != nil {
+			log.SetFlags(log.Ldate | log.Ltime | log.Lshortfile)
+			log.Println("redis pool init fail")
 			panic(err.Error())
 		}
 		return c, err
