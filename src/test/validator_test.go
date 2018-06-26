@@ -14,8 +14,8 @@ func TestValidator(t *testing.T)  {
 	}
 
 	rules := map[string]string{
-		"code":"required",
-		"msg":"required",
+		"code":"",
+		"msg":"",
 		"phone":"numeric",
 	}
 	validator := validate.New()

@@ -121,7 +121,7 @@ func (validator *Validator) Validate(form *map[string]string, rules rules) *Vali
 			if method == "numeric" {
 				if validator.numeric(field, form) == false {
 					validator.HasErr = true
-					validator.ErrList[field] = "非整数数值型"
+					validator.ErrList[field] = "非数值型"
 					continue
 				}
 			}
@@ -206,7 +206,7 @@ func (*Validator) max(field string, form *map[string]string, arg string) bool {
 //数值型
 func (*Validator) numeric(field string, form *map[string]string) bool {
 	v, _ := (*form)[field]
-	_, err := strconv.Atoi(v)
+	_, err := strconv.ParseFloat(v, 64)
 	if err != nil {
 		return false
 	}
