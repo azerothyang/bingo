@@ -20,7 +20,7 @@ type User struct {
 const UserTable = "users"
 
 //新建
-func (u *UserModel) Add(data *map[string]string) (int64, error) {
+func (u *UserModel) Add(data map[string]string) (int64, error) {
 	cols, values := u.initMapData(data)
 	sqlStr := (&sqlbuilder.SqlBuilder{}).Insert(UserTable, cols).GetSql()
 	db := orm.NewOrm()

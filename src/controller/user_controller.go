@@ -22,7 +22,7 @@ func (u *UserController) Add(c *gin.Context) {
 		"login_name": "notEmpty|maxLength:64",
 		"pwd": "notEmpty|maxLength:64",
 	}
-	validator.Validate(request, rules)
+	validator.Validate(&request, rules)
 	//如果验证没通过直接退出
 	if validator.HasErr {
 		c.JSON(http.StatusOK, gin.H{
@@ -32,9 +32,9 @@ func (u *UserController) Add(c *gin.Context) {
 		})
 		return
 	}
-	util.OnlyCols([]string{"login_name", "pwd"}, request)
+	util.OnlyCols([]string{"login_name", "pwd"}, &request)
 	//判断login_name是否重复, 如果重复直接返回
-	user, err := (&model.UserModel{}).GetByLoginName((*request)["login_name"], "id")
+	user, err := (&model.UserModel{}).GetByLoginName(request["login_name"], "id")
 	//如果查询到了对应的用户, 则用户名重复了
 	if user.Id != 0 || err != nil {
 		c.JSON(http.StatusOK, gin.H{
@@ -68,7 +68,7 @@ func (u *UserController) Get(c *gin.Context) {
 	rules := map[string]string{
 		"login_name": "notEmpty|maxLength:64",
 	}
-	validator.Validate(request, rules)
+	validator.Validate(&request, rules)
 	//如果验证没通过直接退出
 	if validator.HasErr {
 		c.JSON(http.StatusOK, gin.H{
@@ -78,7 +78,7 @@ func (u *UserController) Get(c *gin.Context) {
 		})
 		return
 	}
-	user, err := (&model.UserModel{}).GetByLoginName((*request)["login_name"], "id, pwd")
+	user, err := (&model.UserModel{}).GetByLoginName(request["login_name"], "id, pwd")
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"code": http.StatusBadRequest,
@@ -101,7 +101,7 @@ func (u *UserController) Del(c *gin.Context) {
 	rules := map[string]string{
 		"login_name": "notEmpty|maxLength:64",
 	}
-	validator.Validate(request, rules)
+	validator.Validate(&request, rules)
 	//如果验证没通过直接退出
 	if validator.HasErr {
 		c.JSON(http.StatusOK, gin.H{
@@ -111,7 +111,7 @@ func (u *UserController) Del(c *gin.Context) {
 		})
 		return
 	}
-	res, err := (&model.UserModel{}).DeleteUserByLoginName((*request)["login_name"])
+	res, err := (&model.UserModel{}).DeleteUserByLoginName(request["login_name"])
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"code": http.StatusInternalServerError,
