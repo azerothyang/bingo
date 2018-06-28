@@ -17,8 +17,7 @@ func setupRouter() *gin.Engine {
 	r := gin.Default()
 	r.Use(token.HandleToken(), holdup.CheckHold(), ckcache.CheckCache()) //中间件
 	//增加testController 路由
-	router.AddTestControllerRoute(r)
-
+	router.AddUserControllerRoute(r)
 	return r
 }
 
