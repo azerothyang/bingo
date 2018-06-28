@@ -43,9 +43,9 @@ func (SqlBuilder *SqlBuilder) Where(col string, operator string) *SqlBuilder {
 	//如果sql语句中已经有where从句了，则使用and拼接, 否则用where拼接
 	var sql string
 	if SqlBuilder.hasWhere {
-		sql = SqlBuilder.sql + " AND " + col + operator + "?"
+		sql = SqlBuilder.sql + " AND " + col + " " +  operator + " ?"
 	} else {
-		sql = SqlBuilder.sql + " WHERE " + col + operator + "?"
+		sql = SqlBuilder.sql + " WHERE " + col + " " + operator + " ?"
 		SqlBuilder.hasWhere = true
 	}
 	SqlBuilder.sql = sql
@@ -57,7 +57,7 @@ func (SqlBuilder *SqlBuilder) OrWhere(col string, operator string) *SqlBuilder {
 	//如果sql语句中已经有where从句了，则使用and拼接, 否则用where拼接
 	var sql string
 	if SqlBuilder.hasWhere {
-		sql = SqlBuilder.sql + " OR " + col + operator + "?"
+		sql = SqlBuilder.sql + " OR " + col + " " +  operator + " ?"
 	} else {
 		log.Fatalln("orWhere error; this is the first where paragraph")
 	}
