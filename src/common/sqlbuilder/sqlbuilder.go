@@ -12,10 +12,10 @@ type SqlBuilder struct {
 }
 
 //创建sql insert语句,
-func (SqlBuilder *SqlBuilder) Insert(table string, cols *[]string) *SqlBuilder {
+func (SqlBuilder *SqlBuilder) Insert(table string, cols []string) *SqlBuilder {
 	sql := "INSERT INTO " + table + " ("
-	colsCount := len(*cols)
-	for _, v := range *cols {
+	colsCount := len(cols)
+	for _, v := range cols {
 		sql += v + ","
 	}
 	rs := []rune(sql)
@@ -93,9 +93,9 @@ func (SqlBuilder *SqlBuilder) Select(cols string, table string) *SqlBuilder {
 }
 
 //UPDATE
-func (SqlBuilder *SqlBuilder) Update(table string, cols *[]string) *SqlBuilder {
+func (SqlBuilder *SqlBuilder) Update(table string, cols []string) *SqlBuilder {
 	sql := "UPDATE " + table + " SET "
-	for _, v := range *cols {
+	for _, v := range cols {
 		sql += v + "=?,"
 	}
 	runes := []rune(sql)

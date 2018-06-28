@@ -25,7 +25,7 @@ func (u *UserModel) Add(data map[string]string) (int64, error) {
 	sqlStr := (&sqlbuilder.SqlBuilder{}).Insert(UserTable, cols).GetSql()
 	db := orm.NewOrm()
 	stmt, err := db.Raw(sqlStr).Prepare() //stmt要关闭
-	res, err := stmt.Exec(*values...)
+	res, err := stmt.Exec(values...)
 	stmt.Close()
 	if err != nil {
 		return 0, err

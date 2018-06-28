@@ -47,12 +47,12 @@ func init() {
 }
 
 //初始化map数据, 可以在新建或者更新数据的时候使用
-func (*baseModel) initMapData(data map[string]string) (cols *[]string, values *[]interface{}) {
+func (*baseModel) initMapData(data map[string]string) (cols []string, values []interface{}) {
 	var ks []string
 	var vs []interface{}
 	for k, v := range data {
 		ks = append(ks, k)
 		vs = append(vs, v)
 	}
-	return &ks, &vs
+	return ks, vs
 }
