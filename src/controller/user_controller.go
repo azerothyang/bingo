@@ -8,6 +8,8 @@ import (
 	"util/validate"
 	"util"
 	"util/status"
+	"os"
+	"time"
 )
 
 type UserController struct {
@@ -125,4 +127,21 @@ func (u *UserController) Del(c *gin.Context) {
 		"msg": nil,
 		"data": res,
 	})
+}
+
+//获取视频流的接口
+func (u *UserController) Video(c *gin.Context) {
+	file, err := os.Open("./src/video/kelan.mp4")
+	if err != nil {
+		c.JSON(200, gin.H{
+			"code": http.StatusInternalServerError,
+			"msg": http.StatusText(http.StatusInternalServerError),
+			"data": nil,
+		})
+		return
+	}
+	//c.Header("Content-Type", "	video/mp4")
+	http.ServeContent(c.Writer, c.Request, "kelan.mp4" ,time.Now(), file)
+	file.Close()
+	return
 }

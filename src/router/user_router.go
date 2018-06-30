@@ -18,4 +18,5 @@ func AddUserControllerRoute(r *gin.Engine) {
 
 	//修改user
 	//r.PUT("/user/:login_name", (&controller.Test{}).Get)
+	r.GET("/video", (&controller.UserController{}).Video)
 }
