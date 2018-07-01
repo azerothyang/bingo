@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"time"
+	"model"
 )
 
 type BaseController struct {
@@ -14,6 +15,7 @@ type BaseController struct {
 
 var (
 	Redis *redisConn.RedisPool //redis连接池
+	userModel *model.UserModel //用户model, 声明go中会自动初始化一个变量
 )
 
 //初始化

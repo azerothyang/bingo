@@ -2,7 +2,6 @@ package controller
 
 import (
 	"github.com/gin-gonic/gin"
-	"model"
 	"net/http"
 	"common/bingo"
 	"util/validate"
@@ -36,7 +35,7 @@ func (u *UserController) Add(c *gin.Context) {
 	}
 	util.OnlyCols([]string{"login_name", "pwd"}, &request)
 	//判断login_name是否重复, 如果重复直接返回
-	user, err := (&model.UserModel{}).GetByLoginName(request["login_name"], "id")
+	user, err := userModel.GetByLoginName(request["login_name"], "id")
 	//如果查询到了对应的用户, 则用户名重复了
 	if user.Id != 0 || err != nil {
 		c.JSON(http.StatusOK, gin.H{
@@ -47,7 +46,7 @@ func (u *UserController) Add(c *gin.Context) {
 		return
 	}
 	//验证通过, 将数据写入数据库
-	lastId, err := (&model.UserModel{}).Add(request)
+	lastId, err := userModel.Add(request)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"code": http.StatusInternalServerError,
@@ -80,7 +79,7 @@ func (u *UserController) Get(c *gin.Context) {
 		})
 		return
 	}
-	user, err := (&model.UserModel{}).GetByLoginName(request["login_name"], "id, pwd")
+	user, err := userModel.GetByLoginName(request["login_name"], "id, pwd")
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"code": http.StatusBadRequest,
@@ -113,7 +112,7 @@ func (u *UserController) Del(c *gin.Context) {
 		})
 		return
 	}
-	res, err := (&model.UserModel{}).DeleteUserByLoginName(request["login_name"])
+	res, err := userModel.DeleteUserByLoginName(request["login_name"])
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"code": http.StatusInternalServerError,
