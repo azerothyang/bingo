@@ -14,6 +14,10 @@ var (
 //初始化token
 func CheckCache() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		//判断请求是否为get, 只有get请求才可能缓存
+		if c.Request.Method != "GET" {
+			return
+		}
 		//判断是否有缓存, 如果有直接返回
 		cacheKey := conf.CachePrefix + c.Request.URL.String()
 		cache, err := redis.Gett(cacheKey)
