@@ -48,7 +48,7 @@ const (
 	RedisTimeout = time.Second * 3
 	RedisDb      = 1
 
-	TokenEnable     = true
+	TokenEnable     = true               //是否开启token生成, 如果是服务其实就不用开了。 web应用或者app应用需要打开
 	TokenLength     = 64                 //token随机字符串长度
 	TokenCookieName = "lan_yang"         //token在cookie的名称
 	TokenName       = "lan_yang:"        //token在redis里的键前缀
