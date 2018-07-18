@@ -140,6 +140,12 @@ func (SqlBuilder *SqlBuilder) Update(table string, cols []string) *SqlBuilder {
 	return SqlBuilder
 }
 
+//用户自定义复杂sql自行拼接
+func (SqlBuilder *SqlBuilder) Raw(sql string) *SqlBuilder {
+	SqlBuilder.sql = SqlBuilder.sql + " " + sql
+	return SqlBuilder
+}
+
 //获取sql
 func (SqlBuilder *SqlBuilder) GetSql() string {
 	return SqlBuilder.sql
