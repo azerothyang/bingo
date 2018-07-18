@@ -9,6 +9,7 @@ import (
 	"middleware/holdup"
 	"middleware/token"
 	"router"
+	"runtime"
 )
 
 func setupRouter() *gin.Engine {
@@ -23,7 +24,7 @@ func setupRouter() *gin.Engine {
 
 func main() {
 	//gin.SetMode(gin.ReleaseMode)
-
+	runtime.GOMAXPROCS(conf.MAXPROCS)
 	route := setupRouter()
 	// Listen and Server in 0.0.0.0:8080
 	//r.Run(":8080")
@@ -36,10 +37,10 @@ func main() {
  */
 func setUpSrv(router *gin.Engine) {
 	var srv *grace.Server
-	if conf.Mode == gin.DebugMode {
-		srv = grace.NewServer(
-			conf.DevAddr,
-			router,
+		if conf.Mode == gin.DebugMode {
+			srv = grace.NewServer(
+				conf.DevAddr,
+				router,
 		)
 	} else {
 		srv = grace.NewServer(

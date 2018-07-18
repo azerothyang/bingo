@@ -65,6 +65,42 @@ func (SqlBuilder *SqlBuilder) OrWhere(col string, operator string) *SqlBuilder {
 	return SqlBuilder
 }
 
+//where从句, in 可以接在运算符里, n表示in的个数
+func (SqlBuilder *SqlBuilder) In(col string, n int) *SqlBuilder {
+	//如果sql语句中已经有where从句了，则使用and拼接, 否则用where拼接
+	var sql string
+	quesStr := "?"
+	for i:=1; i<n; i++{
+		quesStr += ",?"
+	}
+	if SqlBuilder.hasWhere {
+		sql = SqlBuilder.sql + " AND " + col + " IN (" + quesStr + ")"
+	} else {
+		sql = SqlBuilder.sql + " WHERE " + col + " IN (" + quesStr + ")"
+		SqlBuilder.hasWhere = true
+	}
+	SqlBuilder.sql = sql
+	return SqlBuilder
+}
+
+//where从句, orIn 可以接在运算符里
+func (SqlBuilder *SqlBuilder) OrIn(col string, n int) *SqlBuilder {
+	//如果sql语句中已经有where从句了，则使用and拼接, 否则用where拼接
+	var sql string
+	quesStr := "?"
+	for i:=1; i<n; i++{
+		quesStr += ",?"
+	}
+	if SqlBuilder.hasWhere {
+		sql = SqlBuilder.sql + " Or " + col + " IN (" + quesStr + ")"
+	} else {
+		sql = SqlBuilder.sql + " WHERE " + col + " IN (" + quesStr + ")"
+		SqlBuilder.hasWhere = true
+	}
+	SqlBuilder.sql = sql
+	return SqlBuilder
+}
+
 //order
 func (SqlBuilder *SqlBuilder) OrderBy(col string, direction string) *SqlBuilder {
 	var sql string

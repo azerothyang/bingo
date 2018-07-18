@@ -26,8 +26,8 @@ func New() *Validator {
 /**
 form直接传bingo.MergeRequest中处理返回的键值对请求数据
 rules参数形式:, map[string]string{
-	"param1": "required|min:10",
-	"param1": "required|min:10",
+	"param1": "numeric|min:10",
+	"param1": "numeric|min:10",
 }
 */
 func (validator *Validator) Validate(form *map[string]string, rules rules) *Validator {

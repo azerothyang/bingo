@@ -9,6 +9,7 @@ const (
 	//全局配置start
 	//根据模式，读取不同的配置文件 此配置为正式环境
 	Mode        = gin.DebugMode
+	MAXPROCS = 8               //应用使用的最大cpu核数
 	MaxIdle     = 1000         //redis空闲时保持的协程数
 	MaxActive   = 50000        //redis工作时最大协程数
 	IdleTimeout = time.Second  //redis idle连接超时等待时间, 要小于redis连接超时时间
