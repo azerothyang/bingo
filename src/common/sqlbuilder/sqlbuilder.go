@@ -114,6 +114,21 @@ func (SqlBuilder *SqlBuilder) OrderBy(col string, direction string) *SqlBuilder 
 	return SqlBuilder
 }
 
+//order by field (id,1,54,3,2,1)
+func (SqlBuilder *SqlBuilder) OrderByField(col string, n int) *SqlBuilder {
+	var sql string
+	quesStr := "?"
+	for i:=1; i<n; i++{
+		quesStr += ",?"
+	}
+	if !SqlBuilder.hasOrder {
+		sql = SqlBuilder.sql + " ORDER BY FIELD (" + col + "," + quesStr + ")"
+		SqlBuilder.hasOrder = true
+	}
+	SqlBuilder.sql = sql
+	return SqlBuilder
+}
+
 //limit, order语句在limit之前
 func (SqlBuilder *SqlBuilder) Limit(offset string, size string) *SqlBuilder {
 	sql := SqlBuilder.sql + " LIMIT " + offset + "," + size
