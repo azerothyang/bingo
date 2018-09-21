@@ -1,16 +1,16 @@
 package test
 
 import (
+	"fmt"
 	"testing"
 	"util"
-	"fmt"
 )
 
-func TestOnlyCols(t *testing.T)  {
+func TestOnlyCols(t *testing.T) {
 	form := map[string]string{
-		"code":"",
-		"msg":"",
-		"phone":"1832085ddow",
+		"code":  "",
+		"msg":   "",
+		"phone": "1832085ddow",
 	}
 	cols := []string{
 		"phone",
@@ -20,11 +20,11 @@ func TestOnlyCols(t *testing.T)  {
 	fmt.Println(form)
 }
 
-func BenchmarkOnlyCols(b *testing.B)  {
+func BenchmarkOnlyCols(b *testing.B) {
 	form := map[string]string{
-		"code":"",
-		"msg":"",
-		"phone":"1832085ddow",
+		"code":  "",
+		"msg":   "",
+		"phone": "1832085ddow",
 	}
 	cols := []string{
 		"phone",

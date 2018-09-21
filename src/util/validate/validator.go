@@ -7,7 +7,6 @@ import (
 	"unicode/utf8"
 )
 
-
 type Validator struct {
 	HasErr  bool              //是否严重有错
 	ErrList map[string]string //校验错误列表

@@ -11,10 +11,10 @@ import (
 )
 
 var (
-	masterDb *gorm.DB
-	slaveDb *gorm.DB
+	masterDb  *gorm.DB
+	slaveDb   *gorm.DB
 	dsnMaster string
-	dsnSlave string
+	dsnSlave  string
 )
 
 type baseModel struct {
@@ -48,8 +48,8 @@ func init() {
 	masterDb, errM = gorm.Open("mysql", dsnMaster)
 	slaveDb, errS = gorm.Open("mysql", dsnSlave)
 	if errM != nil || errS != nil {
-		log.Fatal(errM)
-		log.Fatal(errS)
+		log.Println(errM)
+		log.Println(errS)
 	}
 	masterDb.DB().SetMaxIdleConns(masterMaxIdle)
 	masterDb.DB().SetMaxOpenConns(masterMaxConn)

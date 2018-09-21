@@ -11,7 +11,7 @@ type BaseController struct {
 }
 
 var (
-	Redis *redis.Client //redis连接池
+	Redis     *redis.Client    //redis连接池
 	userModel *model.UserModel //用户model, 声明go中会自动初始化一个变量
 )
 
@@ -22,16 +22,15 @@ func init() {
 		Redis = redis.NewClient(&redis.Options{
 			Addr:     conf.RedisHost + ":" + conf.RedisPort,
 			Password: conf.RedisAuth, // no password set
-			DB:       conf.RedisDb,  // use default DB
+			DB:       conf.RedisDb,   // use default DB
 		})
 	case conf.Mode == gin.DebugMode:
 		Redis = redis.NewClient(&redis.Options{
 			Addr:     conf.DevRedisHost + ":" + conf.DevRedisPort,
 			Password: conf.DevRedisAuth, // no password set
-			DB:       conf.DevRedisDb,  // use default DB
+			DB:       conf.DevRedisDb,   // use default DB
 		})
 	}
-
 
 }
 
