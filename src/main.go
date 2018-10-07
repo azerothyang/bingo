@@ -23,12 +23,11 @@ func main() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
 	r := setupRouter()
 	// Listen and Server in 0.0.0.0:8080
-	r.Run(conf.DevAddr)
-	//switch {
-	//case conf.Mode == gin.ReleaseMode:
-	//	r.Run(conf.Addr)
-	//case conf.Mode == gin.DebugMode:
-	//	r.Run(conf.DevAddr)
-	//}
+	switch {
+	case conf.Mode == gin.ReleaseMode:
+		r.Run(conf.Addr)
+	case conf.Mode == gin.DebugMode:
+		r.Run(conf.DevAddr)
+	}
 
 }
