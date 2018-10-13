@@ -67,18 +67,17 @@ func HandleToken() gin.HandlerFunc {
 //初始化token, 返回token
 func initToken() string {
 	//生成随机字符串, 如果redis中不包含
-	var tokenStr, redisKey string
+	var tokenStr string
 	for {
 		tokenStr = util.RandomStr(tokenLength)
 		//如果token没有重复则退出
-		redisKey = redisTokenPrefix + tokenStr
-		_, err := redis.Get(redisKey).Result()
+		_, err := redis.Get(redisTokenPrefix + tokenStr).Result()
 		if err == redisPkg.Nil {
 			log.Println(err)
 			break
 		}
 	}
-	res := SetToken(redisKey, &Token{}, tokenExpire)
+	res := SetToken(tokenStr, &Token{}, tokenExpire)
 	if res == nil {
 		return tokenStr
 	}
@@ -91,7 +90,7 @@ func SetToken(token string, value interface{}, expire time.Duration) error {
 	if err != nil {
 		return err
 	}
-	_, err = redis.Set(token, v, expire).Result()
+	_, err = redis.Set(redisTokenPrefix + token, v, expire).Result()
 	return err
 }
 
