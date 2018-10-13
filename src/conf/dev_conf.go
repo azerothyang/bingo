@@ -34,5 +34,12 @@ const (
 	DevRedisPort    = "6379"
 	DevRedisAuth    = ""
 	DevRedisDb      = 1
+	DevRedisTimeout = 1 * time.Second
+
+	DevTokenEnable     = true               //是否开启token生成, 如果是服务其实就不用开了。 web应用或者app应用需要打开
+	DevTokenLength     = 64                 //token随机字符串长度
+	DevTokenCookieName = "lan_yang"         //token在cookie的名称
+	DevTokenName       = "lan_yang:"        //token在redis里的键前缀
+	DevTokenExpire     = time.Hour * 24 * 7 //redis里的token过期时间, 及cookie过期时间
 
 )

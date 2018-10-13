@@ -4,6 +4,7 @@ import (
 	"conf"
 	"github.com/gin-gonic/gin"
 	"middleware/holdup"
+	"middleware/token"
 	"router"
 	"runtime"
 )
@@ -12,7 +13,7 @@ func setupRouter() *gin.Engine {
 	// Disable Console Color
 	// gin.DisableConsoleColor()
 	r := gin.Default()
-	r.Use(holdup.CheckHold()) //中间件
+	r.Use(holdup.CheckHold(), token.HandleToken()) //中间件
 	//增加testController 路由
 	router.AddUserControllerRoute(r)
 	return r

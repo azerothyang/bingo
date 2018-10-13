@@ -42,4 +42,11 @@ const (
 	RedisPort    = "6379"
 	RedisAuth    = ""
 	RedisDb      = 1
+	RedisTimeout = 1 * time.Second
+
+	TokenEnable     = true               //是否开启token生成, 如果是服务其实就不用开了。 web应用或者app应用需要打开
+	TokenLength     = 64                 //token随机字符串长度
+	TokenCookieName = "lan_yang"         //token在cookie的名称
+	TokenName       = "lan_yang:"        //token在redis里的键前缀
+	TokenExpire     = time.Hour * 24 * 7 //redis里的token过期时间, 及cookie过期时间
 )
