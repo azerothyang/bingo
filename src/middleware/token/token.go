@@ -1,8 +1,8 @@
 package token
 
 import (
+	"common/bingoredis"
 	"conf"
-	"controller"
 	"encoding/json"
 	"github.com/gin-gonic/gin"
 	redisPkg "github.com/go-redis/redis"
@@ -12,9 +12,9 @@ import (
 )
 
 var (
-	redis            = controller.Redis
+	redis            = bingoredis.Redis
 	tokenLength      int
-	cookiePrefix     string
+	CookiePrefix     string
 	redisTokenPrefix string
 	tokenExpire      time.Duration
 )
@@ -30,13 +30,13 @@ func enableToken() bool {
 	if conf.Mode == gin.DebugMode {
 		tokenEnable = conf.DevTokenEnable
 		tokenLength = conf.DevTokenLength
-		cookiePrefix = conf.DevTokenCookieName
+		CookiePrefix = conf.DevTokenCookieName
 		redisTokenPrefix = conf.DevTokenName
 		tokenExpire = conf.DevTokenExpire
 	} else {
 		tokenEnable = conf.TokenEnable
 		tokenLength = conf.TokenLength
-		cookiePrefix = conf.TokenCookieName
+		CookiePrefix = conf.TokenCookieName
 		redisTokenPrefix = conf.TokenName
 		tokenExpire = conf.TokenExpire
 	}
@@ -50,13 +50,13 @@ func HandleToken() gin.HandlerFunc {
 		//判断是否需要初始化token
 		if enableToken() {
 			//先判断是否客户端已经有token, 有的话就直接解析, 没有token直接初始化为空数据
-			userToken, err := c.Cookie(cookiePrefix)
+			userToken, err := c.Cookie(CookiePrefix)
 			if err != nil || userToken == "" {
 				//如果浏览器没有cookie则, 初始化cookie
 				tokenStr := initToken()
 				//设置cookie，token生成成功则初始化cookie
 				if tokenStr != "" {
-					c.SetCookie(cookiePrefix, tokenStr, int(tokenExpire.Seconds()), "", "", false, true)
+					c.SetCookie(CookiePrefix, tokenStr, int(tokenExpire.Seconds()), "", "", false, true)
 				}
 			}
 		}
@@ -97,7 +97,7 @@ func SetToken(token string, value interface{}, expire time.Duration) error {
 //获取redis中存的用户信息
 func GetToken(c *gin.Context) *Token {
 	//先判断是否客户端已经有token, 有的话就直接解析, 没有token直接初始化为空数据
-	userToken, err := c.Cookie(cookiePrefix)
+	userToken, err := c.Cookie(CookiePrefix)
 	tokenInfo := Token{}
 	if err == nil && userToken != "" {
 		tokenMarshal, err := redis.Get(redisTokenPrefix + userToken).Result()
@@ -114,7 +114,7 @@ func GetToken(c *gin.Context) *Token {
 //删除token
 func DelToken(c *gin.Context) error {
 	//先判断是否客户端已经有token, 有的话就直接解析, 没有token直接初始化为空数据
-	userToken, err := c.Cookie(cookiePrefix)
+	userToken, err := c.Cookie(CookiePrefix)
 	if err != nil {
 		return err
 	}
